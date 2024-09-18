@@ -20,7 +20,7 @@ namespace FT.CQRS.Decorators
             string commandJson = JsonConvert.SerializeObject(command);
 
             // Use proper logging here
-            _logger.LogDebug($"Type of command: {command.GetType().Name}: {commandJson}");
+            _logger.LogInformation($"Type of command: {command.GetType().Name}: {commandJson}");
 
             var result = _handler.Handle(command);
             if (result.IsFailure)

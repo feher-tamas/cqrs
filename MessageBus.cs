@@ -29,8 +29,14 @@ namespace FT.CQRS
             Type handlerType = type.MakeGenericType(typeArgs);
 
             dynamic handler = _provider.GetService(handlerType);
-            T result = handler.Handle((dynamic)query);
-            return result;
+
+            var methodInfo = handler.GetType().GetMethod("Handle");
+            object[] parameters = new object[] { query };
+            if (methodInfo != null)
+            {
+                return methodInfo.Invoke(handler, parameters);
+            }
+            throw new MethodAccessException();
         }
 
         public void Send(IEnumerable<IEvent> events)

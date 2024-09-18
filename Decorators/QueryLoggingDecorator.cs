@@ -19,11 +19,10 @@ namespace FT.CQRS.Decorators
         {
             string queryJson = JsonConvert.SerializeObject(query);
 
-            // Use proper logging here
-            _logger.LogDebug($"Type of query: {query.GetType().Name}: {queryJson}");
+            _logger.LogInformation($"Type of query: {query.GetType().Name}: {queryJson}");
             var result = _handler.Handle(query);
             string resultJson = JsonConvert.SerializeObject(result);
-            _logger.LogDebug($"Result is : {resultJson}");
+            _logger.LogInformation($"Result is : {resultJson}");
             return result;
         }
     }
