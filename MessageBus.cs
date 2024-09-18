@@ -49,9 +49,15 @@ namespace FT.CQRS
                 Type[] typeArgs = { appevent.GetType() };
                 Type handlerType = type.MakeGenericType(typeArgs);
                 dynamic handlers = _provider.GetServices(handlerType);
+                
                 foreach (dynamic handler in handlers)
                 {
-                    handler.Handle((dynamic)appevent);
+                    var methodInfo = handler.GetType().GetMethod("Handle");
+                    object[] parameters = new object[] {appevent};
+                    if (methodInfo != null)
+                    {
+                        methodInfo.Invoke(handler, parameters);
+                    }
                 }
             }
             catch (Exception ex)
