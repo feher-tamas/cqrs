@@ -3,23 +3,28 @@ using FT.CQRS.Decorators;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace PPE.MLU.Application.DependencyInjection
+namespace FT.CQRS.DependencyInjection
 {
     public static class HandlerRegistration
     {
         public static void AddHandlers(this IServiceCollection services)
         {
-            List<Type> handlerTypes = typeof(ICommand).Assembly.GetTypes()
-                .Where(x => x.GetInterfaces().Any(y => IsHandlerInterface(y)))
-                .Where(x => x.Name.EndsWith("Handler"))
-                .ToList();
-
-            foreach (Type type in handlerTypes)
+            //List<Type> handlerTypes = typeof(ICommand).Assembly.GetTypes()
+            //    .Where(x => x.GetInterfaces().Any(y => IsHandlerInterface(y)))
+            //    .Where(x => x.Name.EndsWith("Handler"))
+            //    .ToList();
+            foreach (var assembyName in Assembly.GetEntryAssembly().GetReferencedAssemblies())
             {
-                AddHandler(services, type);
+                Assembly assembly = Assembly.Load(assembyName);
+                foreach (var type in assembly.GetTypes())
+                {
+                    if (type.GetInterfaces().Any(y => IsHandlerInterface(y)) && type.Name.EndsWith("Handler"))
+                    {
+                        AddHandler(services, type);
+                    }
+                }
             }
         }
-
         private static void AddHandler(IServiceCollection services, Type type)
         {
             object[] attributes = type.GetCustomAttributes(false);

@@ -18,7 +18,7 @@ namespace FT.CQRS
             Type[] typeArgs = { command.GetType() };
             Type handlerType = type.MakeGenericType(typeArgs);
             dynamic handler = _provider.GetService(handlerType);
-            Result result = handler?.Handle((dynamic)command);
+            Result result = handler.Handle((dynamic)command);
             return result; 
         }
 
@@ -29,7 +29,7 @@ namespace FT.CQRS
             Type handlerType = type.MakeGenericType(typeArgs);
 
             dynamic handler = _provider.GetService(handlerType);
-            T result = handler?.Handle((dynamic)query);
+            T result = handler.Handle((dynamic)query);
             return result;
         }
 
